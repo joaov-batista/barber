@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Limas Barbershop — Corte em Domicílio</title>
+  <link rel="stylesheet" href="style.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,700;1,400&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+</head>
+<body class="client-body">
+
+  <!-- SPLASH SCREEN -->
+  <div id="splash">
+    <div class="splash-inner">
+      <div class="splash-logo">
+        <div class="logo-icon"><i class="fas fa-cut"></i></div>
+        <span class="logo-text">LIMAS</span>
+        <span class="logo-sub">BARBERSHOP</span>
+      </div>
+      <div class="splash-tagline">Corte em Domicílio</div>
+      <div class="splash-loader"><span></span></div>
+    </div>
+  </div>
+
+  <!-- AUTH SCREEN -->
+  <div id="auth-screen" class="screen hidden">
+    <div class="auth-bg">
+      <div class="auth-overlay"></div>
+      <div class="auth-content">
+        <div class="auth-logo">
+          <div class="logo-icon sm"><i class="fas fa-cut"></i></div>
+          <div>
+            <div class="logo-text">LIMAS</div>
+            <div class="logo-sub">BARBERSHOP</div>
+          </div>
+        </div>
+        <h1 class="auth-headline">O melhor corte<br/><em>na sua casa.</em></h1>
+        <p class="auth-desc">Agende seu corte de cabelo em domicílio com os melhores barbeiros da cidade.</p>
+        <div class="auth-tabs">
+          <button class="auth-tab active" data-tab="login">Entrar</button>
+          <button class="auth-tab" data-tab="register">Cadastrar</button>
+        </div>
+        <div id="login-form" class="auth-form">
+          <div class="input-group">
+            <i class="fas fa-envelope"></i>
+            <input type="email" id="login-email" placeholder="E-mail" />
+          </div>
+          <div class="input-group">
+            <i class="fas fa-lock"></i>
+            <input type="password" id="login-password" placeholder="Senha" />
+          </div>
+          <button class="btn-primary" onclick="loginUser()">Entrar</button>
+          <button class="btn-ghost" onclick="loginAnon()">Continuar sem conta</button>
+        </div>
+        <div id="register-form" class="auth-form hidden">
+          <div class="input-group">
+            <i class="fas fa-user"></i>
+            <input type="text" id="reg-name" placeholder="Nome completo" />
+          </div>
+          <div class="input-group">
+            <i class="fas fa-phone"></i>
+            <input type="tel" id="reg-phone" placeholder="WhatsApp (ex: 71 99999-0000)" />
+          </div>
+          <div class="input-group">
+            <i class="fas fa-envelope"></i>
+            <input type="email" id="reg-email" placeholder="E-mail" />
+          </div>
+          <div class="input-group">
+            <i class="fas fa-lock"></i>
+            <input type="password" id="reg-password" placeholder="Senha (mín. 6 caracteres)" />
+          </div>
+          <button class="btn-primary" onclick="registerUser()">Criar conta</button>
+        </div>
+        <p class="auth-admin-link">É barbeiro? <a href="admin.html">Acesse o painel admin</a></p>
+      </div>
+    </div>
+  </div>
+
+  <!-- CLIENT APP -->
+  <div id="client-app" class="screen hidden">
+    <!-- TOP NAV -->
+    <nav class="top-nav">
+      <div class="nav-left">
+        <div class="logo-icon xs"><i class="fas fa-cut"></i></div>
+        <span class="nav-brand">LIMAS</span>
+      </div>
+      <div class="nav-right">
+        <button class="icon-btn" onclick="showSection('notif')"><i class="fas fa-bell"></i><span class="badge" id="notif-badge"></span></button>
+        <button class="icon-btn" onclick="logoutUser()"><i class="fas fa-sign-out-alt"></i></button>
+      </div>
+    </nav>
+
+    <!-- MAIN CONTENT -->
+    <main class="client-main" id="client-main">
+
+      <!-- HOME -->
+      <section id="sec-home" class="client-section active">
+        <div class="home-hero">
+          <div class="hero-text">
+            <p class="hero-greeting" id="hero-greeting">Olá, visitante!</p>
+            <h2 class="hero-title">Agende seu<br/><span class="accent">corte</span> hoje.</h2>
+            <p class="hero-sub">Barbeiro vai até você</p>
+          </div>
+          <div class="hero-art">
+            <div class="barber-circle"><i class="fas fa-cut"></i></div>
+          </div>
+        </div>
+
+        <!-- PRÓXIMOS AGENDAMENTOS -->
+        <div class="section-block">
+          <div class="section-header">
+            <h3>Seus agendamentos</h3>
+            <button class="link-btn" onclick="showSection('agendamentos')">Ver todos</button>
+          </div>
+          <div id="home-appts" class="appts-mini"></div>
+        </div>
+
+        <!-- SERVIÇOS -->
+        <div class="section-block">
+          <div class="section-header">
+            <h3>Serviços</h3>
+            <button class="link-btn" onclick="showSection('agendar')">Agendar</button>
+          </div>
+          <div class="services-grid" id="services-home"></div>
+        </div>
+
+        <!-- FUNCIONAMENTO -->
+        <div class="section-block">
+          <div class="section-header"><h3>Horários de funcionamento</h3></div>
+          <div class="hours-card" id="hours-display"></div>
+        </div>
+      </section>
+
+      <!-- AGENDAR -->
+      <section id="sec-agendar" class="client-section">
+        <h2 class="page-title">Novo Agendamento</h2>
+        <div class="booking-form">
+          <!-- Step 1: Serviço -->
+          <div class="booking-step" id="bstep-1">
+            <div class="step-label"><span class="step-num">1</span> Escolha o serviço</div>
+            <div class="services-select" id="services-list"></div>
+          </div>
+          <!-- Step 2: Data -->
+          <div class="booking-step" id="bstep-2">
+            <div class="step-label"><span class="step-num">2</span> Escolha a data</div>
+            <div class="calendar-wrapper" id="mini-calendar"></div>
+          </div>
+          <!-- Step 3: Horário -->
+          <div class="booking-step" id="bstep-3">
+            <div class="step-label"><span class="step-num">3</span> Escolha o horário</div>
+            <div class="slots-grid" id="time-slots"></div>
+          </div>
+          <!-- Step 4: Endereço -->
+          <div class="booking-step" id="bstep-4">
+            <div class="step-label"><span class="step-num">4</span> Endereço para o corte</div>
+            <div class="input-group"><i class="fas fa-map-marker-alt"></i><input type="text" id="addr-street" placeholder="Rua e número" /></div>
+            <div class="input-group"><i class="fas fa-city"></i><input type="text" id="addr-bairro" placeholder="Bairro" /></div>
+            <div class="input-group"><i class="fas fa-info-circle"></i><input type="text" id="addr-comp" placeholder="Complemento (apto, bloco...)" /></div>
+          </div>
+          <!-- Step 5: Desconto -->
+          <div class="booking-step" id="bstep-5">
+            <div class="step-label"><span class="step-num">5</span> Cupom de desconto</div>
+            <div class="coupon-row">
+              <div class="input-group flex1"><i class="fas fa-tag"></i><input type="text" id="coupon-input" placeholder="Código do cupom" /></div>
+              <button class="btn-sm" onclick="applyCoupon()">Aplicar</button>
+            </div>
+            <div id="coupon-msg"></div>
+          </div>
+          <!-- Resumo -->
+          <div class="booking-summary" id="booking-summary">
+            <h4>Resumo</h4>
+            <div id="summary-content"></div>
+          </div>
+          <button class="btn-primary full" onclick="confirmBooking()">Confirmar Agendamento</button>
+        </div>
+      </section>
+
+      <!-- AGENDAMENTOS -->
+      <section id="sec-agendamentos" class="client-section">
+        <h2 class="page-title">Meus Agendamentos</h2>
+        <div class="appt-tabs">
+          <button class="appt-tab active" data-filter="upcoming">Próximos</button>
+          <button class="appt-tab" data-filter="past">Histórico</button>
+        </div>
+        <div id="appts-list" class="appts-full"></div>
+      </section>
+
+      <!-- PREÇOS -->
+      <section id="sec-precos" class="client-section">
+        <h2 class="page-title">Serviços & Preços</h2>
+        <div id="prices-list" class="prices-grid"></div>
+        <div class="promo-banner" id="promo-banner"></div>
+      </section>
+
+    </main>
+
+    <!-- BOTTOM NAV -->
+    <nav class="bottom-nav">
+      <button class="bnav-btn active" data-section="home" onclick="showSection('home')">
+        <i class="fas fa-home"></i><span>Início</span>
+      </button>
+      <button class="bnav-btn" data-section="agendar" onclick="showSection('agendar')">
+        <i class="fas fa-calendar-plus"></i><span>Agendar</span>
+      </button>
+      <button class="bnav-btn" data-section="agendamentos" onclick="showSection('agendamentos')">
+        <i class="fas fa-calendar-check"></i><span>Agenda</span>
+      </button>
+      <button class="bnav-btn" data-section="precos" onclick="showSection('precos')">
+        <i class="fas fa-tag"></i><span>Preços</span>
+      </button>
+    </nav>
+  </div>
+
+  <!-- TOAST -->
+  <div id="toast" class="toast hidden"></div>
+
+  <!-- MODAL AGENDAMENTO CONFIRMADO -->
+  <div id="success-modal" class="modal hidden">
+    <div class="modal-content success-modal">
+      <div class="success-icon"><i class="fas fa-check-circle"></i></div>
+      <h3>Agendado!</h3>
+      <p id="success-text"></p>
+      <button class="btn-primary" onclick="closeModal()">Ótimo!</button>
+    </div>
+  </div>
+
+  <!-- Firebase -->
+  <script type="module" src="firebase-config.js"></script>
+  <script type="module" src="client.js"></script>
+</body>
+</html>

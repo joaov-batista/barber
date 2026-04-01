@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Admin — Limas Barbershop</title>
+  <link rel="stylesheet" href="style.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,700;1,400&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+</head>
+<body class="admin-body">
+
+  <!-- ADMIN LOGIN -->
+  <div id="admin-login" class="screen">
+    <div class="admin-login-wrap">
+      <div class="admin-login-card">
+        <div class="admin-logo">
+          <div class="logo-icon"><i class="fas fa-cut"></i></div>
+          <div>
+            <div class="logo-text">LIMAS</div>
+            <div class="logo-sub">BARBERSHOP — ADMIN</div>
+          </div>
+        </div>
+        <h2>Painel do Barbeiro</h2>
+        <div class="input-group">
+          <i class="fas fa-envelope"></i>
+          <input type="email" id="adm-email" placeholder="E-mail admin" value="admin@limasbarbershop.com" />
+        </div>
+        <div class="input-group">
+          <i class="fas fa-lock"></i>
+          <input type="password" id="adm-pass" placeholder="Senha" value="admin123" />
+        </div>
+        <button class="btn-primary full" onclick="adminLogin()">Acessar Painel</button>
+        <a href="index.html" class="back-link"><i class="fas fa-arrow-left"></i> Voltar para o site</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- ADMIN DASHBOARD -->
+  <div id="admin-app" class="screen hidden">
+    <!-- SIDEBAR -->
+    <aside class="admin-sidebar" id="admin-sidebar">
+      <div class="sidebar-logo">
+        <div class="logo-icon sm"><i class="fas fa-cut"></i></div>
+        <div>
+          <div class="logo-text">LIMAS</div>
+          <div class="logo-sub">ADMIN</div>
+        </div>
+      </div>
+      <nav class="sidebar-nav">
+        <button class="snav-btn active" data-panel="dashboard" onclick="showPanel('dashboard')">
+          <i class="fas fa-th-large"></i><span>Dashboard</span>
+        </button>
+        <button class="snav-btn" data-panel="agendamentos" onclick="showPanel('agendamentos')">
+          <i class="fas fa-calendar-alt"></i><span>Agendamentos</span>
+        </button>
+        <button class="snav-btn" data-panel="servicos" onclick="showPanel('servicos')">
+          <i class="fas fa-scissors"></i><span>Serviços</span>
+        </button>
+        <button class="snav-btn" data-panel="horarios" onclick="showPanel('horarios')">
+          <i class="fas fa-clock"></i><span>Horários</span>
+        </button>
+        <button class="snav-btn" data-panel="clientes" onclick="showPanel('clientes')">
+          <i class="fas fa-users"></i><span>Clientes</span>
+        </button>
+        <button class="snav-btn" data-panel="cupons" onclick="showPanel('cupons')">
+          <i class="fas fa-tag"></i><span>Cupons</span>
+        </button>
+        <button class="snav-btn" data-panel="config" onclick="showPanel('config')">
+          <i class="fas fa-cog"></i><span>Configurações</span>
+        </button>
+      </nav>
+      <button class="sidebar-logout" onclick="adminLogout()"><i class="fas fa-sign-out-alt"></i><span>Sair</span></button>
+    </aside>
+
+    <!-- MAIN AREA -->
+    <div class="admin-main">
+      <header class="admin-header">
+        <button class="hamburger" onclick="toggleSidebar()"><i class="fas fa-bars"></i></button>
+        <div class="admin-header-info">
+          <h1 id="panel-title">Dashboard</h1>
+          <span class="header-date" id="header-date"></span>
+        </div>
+        <div class="header-right">
+          <div class="admin-avatar"><i class="fas fa-user-circle"></i></div>
+        </div>
+      </header>
+
+      <!-- PANELS -->
+      <div class="panels-container">
+
+        <!-- DASHBOARD -->
+        <div class="admin-panel active" id="panel-dashboard">
+          <div class="stats-grid">
+            <div class="stat-card">
+              <div class="stat-icon"><i class="fas fa-calendar-check"></i></div>
+              <div class="stat-info">
+                <div class="stat-val" id="stat-today">0</div>
+                <div class="stat-label">Hoje</div>
+              </div>
+            </div>
+            <div class="stat-card accent">
+              <div class="stat-icon"><i class="fas fa-calendar-week"></i></div>
+              <div class="stat-info">
+                <div class="stat-val" id="stat-week">0</div>
+                <div class="stat-label">Esta semana</div>
+              </div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-icon"><i class="fas fa-dollar-sign"></i></div>
+              <div class="stat-info">
+                <div class="stat-val" id="stat-revenue">R$0</div>
+                <div class="stat-label">Receita estimada</div>
+              </div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-icon"><i class="fas fa-users"></i></div>
+              <div class="stat-info">
+                <div class="stat-val" id="stat-clients">0</div>
+                <div class="stat-label">Clientes</div>
+              </div>
+            </div>
+          </div>
+          <div class="dashboard-grid">
+            <div class="dash-card">
+              <h3>Próximos agendamentos</h3>
+              <div id="dash-upcoming"></div>
+            </div>
+            <div class="dash-card">
+              <h3>Agendamentos pendentes</h3>
+              <div id="dash-pending"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- AGENDAMENTOS -->
+        <div class="admin-panel" id="panel-agendamentos">
+          <div class="panel-toolbar">
+            <div class="filter-row">
+              <select id="filter-status" onchange="filterAppointments()">
+                <option value="all">Todos os status</option>
+                <option value="pending">Pendente</option>
+                <option value="confirmed">Confirmado</option>
+                <option value="done">Finalizado</option>
+                <option value="cancelled">Cancelado</option>
+              </select>
+              <input type="date" id="filter-date" onchange="filterAppointments()" />
+              <button class="btn-sm" onclick="clearFilters()"><i class="fas fa-times"></i> Limpar</button>
+            </div>
+          </div>
+          <div class="table-wrap">
+            <table class="admin-table" id="appts-table">
+              <thead>
+                <tr>
+                  <th>Cliente</th>
+                  <th>Serviço</th>
+                  <th>Data/Hora</th>
+                  <th>Endereço</th>
+                  <th>Valor</th>
+                  <th>Status</th>
+                  <th>Ações</th>
+                </tr>
+              </thead>
+              <tbody id="appts-tbody"></tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- SERVIÇOS -->
+        <div class="admin-panel" id="panel-servicos">
+          <div class="panel-toolbar">
+            <button class="btn-primary" onclick="openServiceModal()"><i class="fas fa-plus"></i> Novo serviço</button>
+          </div>
+          <div class="services-admin-grid" id="services-admin"></div>
+        </div>
+
+        <!-- HORÁRIOS -->
+        <div class="admin-panel" id="panel-horarios">
+          <div class="hours-admin">
+            <h3>Dias e horários de funcionamento</h3>
+            <p class="hint">Configure os dias e horários disponíveis para agendamento.</p>
+            <div id="days-config"></div>
+            <div class="hours-actions">
+              <div class="input-row">
+                <label>Abertura:</label>
+                <input type="time" id="open-time" value="08:00" />
+                <label>Fechamento:</label>
+                <input type="time" id="close-time" value="20:00" />
+                <label>Intervalo:</label>
+                <select id="slot-duration">
+                  <option value="30">30 min</option>
+                  <option value="45" selected>45 min</option>
+                  <option value="60">60 min</option>
+                </select>
+              </div>
+              <button class="btn-primary" onclick="saveHours()"><i class="fas fa-save"></i> Salvar horários</button>
+            </div>
+            <div class="blocked-section">
+              <h4>Bloquear datas específicas</h4>
+              <div class="input-row">
+                <input type="date" id="block-date" />
+                <input type="text" id="block-reason" placeholder="Motivo (ex: feriado)" />
+                <button class="btn-sm" onclick="blockDate()">Bloquear</button>
+              </div>
+              <div id="blocked-list"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- CLIENTES -->
+        <div class="admin-panel" id="panel-clientes">
+          <div class="panel-toolbar">
+            <input type="text" id="client-search" placeholder="Buscar cliente..." oninput="searchClients()" class="search-input" />
+          </div>
+          <div class="table-wrap">
+            <table class="admin-table">
+              <thead>
+                <tr><th>Nome</th><th>WhatsApp</th><th>E-mail</th><th>Total agendamentos</th><th>Cadastro</th></tr>
+              </thead>
+              <tbody id="clients-tbody"></tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- CUPONS -->
+        <div class="admin-panel" id="panel-cupons">
+          <div class="panel-toolbar">
+            <button class="btn-primary" onclick="openCouponModal()"><i class="fas fa-plus"></i> Novo cupom</button>
+          </div>
+          <div class="coupons-list" id="coupons-list"></div>
+        </div>
+
+        <!-- CONFIGURAÇÕES -->
+        <div class="admin-panel" id="panel-config">
+          <div class="config-card">
+            <h3>Informações da barbearia</h3>
+            <div class="input-group">
+              <i class="fas fa-store"></i>
+              <input type="text" id="cfg-name" placeholder="Nome da barbearia" value="Limas Barbershop" />
+            </div>
+            <div class="input-group">
+              <i class="fas fa-phone"></i>
+              <input type="text" id="cfg-phone" placeholder="WhatsApp" />
+            </div>
+            <div class="input-group">
+              <i class="fas fa-map-marker-alt"></i>
+              <input type="text" id="cfg-address" placeholder="Área de atendimento" />
+            </div>
+            <div class="input-group">
+              <i class="fas fa-info-circle"></i>
+              <textarea id="cfg-about" placeholder="Sobre a barbearia..." rows="3"></textarea>
+            </div>
+            <div class="config-section">
+              <h4>Taxa de deslocamento</h4>
+              <div class="input-row">
+                <label>Taxa fixa (R$):</label>
+                <input type="number" id="cfg-fee" placeholder="Ex: 10" step="0.01" />
+                <label>Grátis a partir de:</label>
+                <input type="number" id="cfg-free-from" placeholder="Valor mínimo p/ isenção" step="0.01" />
+              </div>
+            </div>
+            <button class="btn-primary" onclick="saveConfig()"><i class="fas fa-save"></i> Salvar configurações</button>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL SERVIÇO -->
+  <div id="service-modal" class="modal hidden">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3 id="service-modal-title">Novo Serviço</h3>
+        <button class="modal-close" onclick="closeModal('service-modal')"><i class="fas fa-times"></i></button>
+      </div>
+      <input type="hidden" id="svc-id" />
+      <div class="input-group"><i class="fas fa-scissors"></i><input type="text" id="svc-name" placeholder="Nome do serviço" /></div>
+      <div class="input-group"><i class="fas fa-align-left"></i><input type="text" id="svc-desc" placeholder="Descrição" /></div>
+      <div class="input-group"><i class="fas fa-dollar-sign"></i><input type="number" id="svc-price" placeholder="Preço (R$)" step="0.01" /></div>
+      <div class="input-group"><i class="fas fa-clock"></i><input type="number" id="svc-duration" placeholder="Duração (minutos)" /></div>
+      <div class="input-group"><i class="fas fa-image"></i><input type="text" id="svc-icon" placeholder="Ícone FontAwesome (ex: fa-cut)" /></div>
+      <div class="modal-footer">
+        <button class="btn-ghost" onclick="closeModal('service-modal')">Cancelar</button>
+        <button class="btn-primary" onclick="saveService()">Salvar</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL CUPOM -->
+  <div id="coupon-modal" class="modal hidden">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3>Novo Cupom</h3>
+        <button class="modal-close" onclick="closeModal('coupon-modal')"><i class="fas fa-times"></i></button>
+      </div>
+      <div class="input-group"><i class="fas fa-tag"></i><input type="text" id="cpn-code" placeholder="Código (ex: PROMO10)" /></div>
+      <div class="input-group"><i class="fas fa-percent"></i><input type="number" id="cpn-discount" placeholder="Desconto (%)" min="1" max="100" /></div>
+      <div class="input-group"><i class="fas fa-calendar"></i><input type="date" id="cpn-expiry" /></div>
+      <div class="input-group"><i class="fas fa-hashtag"></i><input type="number" id="cpn-uses" placeholder="Usos máximos (0 = ilimitado)" /></div>
+      <div class="modal-footer">
+        <button class="btn-ghost" onclick="closeModal('coupon-modal')">Cancelar</button>
+        <button class="btn-primary" onclick="saveCoupon()">Criar cupom</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- TOAST -->
+  <div id="toast" class="toast hidden"></div>
+
+  <script type="module" src="firebase-config.js"></script>
+  <script type="module" src="admin.js"></script>
+</body>
+</html>
